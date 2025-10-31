@@ -11,6 +11,7 @@ import Model.Ghost;
 import Model.Type;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.IOException;
 
@@ -29,6 +30,7 @@ public class GameView<BufferedImage> extends JComponent {
     private final Image wall =new ImageIcon("images/wall.png").getImage(); ;
     // champ pour l'image de pacman (statique ou animé)
     private Image pacmanImage;
+    private double angle = 0;
 
 
 
@@ -178,11 +180,11 @@ public class GameView<BufferedImage> extends JComponent {
     }
 
     private void drawPacman(Graphics g) {
+        /*
         int x = game.getPacman().getX();
         int y = game.getPacman().getY();
 
         if (pacmanImage != null) {
-            // dessine l'image en la redimensionnant à la taille 'size'
             g.drawImage(pacmanImage, x, y, size, size, this);
         } else {
             // fallback : dessin simple si image indisponible
@@ -191,12 +193,33 @@ public class GameView<BufferedImage> extends JComponent {
             g.setColor(Color.black);
             g.fillOval(x + 22, y + 3, size + 8, size - 8);
         }
-        //https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/3f8e7cb6-257a-4785-a420-51b3ef31892d/diy3th6-7f47e322-6a4c-4db2-9cac-d74eef8c4e2e.gif?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi8zZjhlN2NiNi0yNTdhLTQ3ODUtYTQyMC01MWIzZWYzMTg5MmQvZGl5M3RoNi03ZjQ3ZTMyMi02YTRjLTRkYjItOWNhYy1kNzRlZWY4YzRlMmUuZ2lmIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.7by62scGsLCNXhA4jhQZXeiCk0gMGRUYgYgEGiwLROE
-        /*
-        g.setColor(game.getPacman().getColor());
-        g.fillOval(game.getPacman().getX(), game.getPacman().getY(), size, size);
-        g.setColor(Color.black);
         */
+        int x = game.getPacman().getX();
+        int y = game.getPacman().getY();
+        int size = 40; // or your real size
+
+        Graphics2D g2d = (Graphics2D) g;
+
+// Save original transform
+        AffineTransform old = g2d.getTransform();
+
+// Rotate around the center of Pac-Man
+        g2d.rotate(getAngle(), x + size / 2.0, y + size / 2.0);
+
+// Draw Pac-Man
+        if (pacmanImage != null) {
+            g2d.drawImage(pacmanImage, x, y, size, size, this);
+        } else {
+            // fallback drawing
+            g2d.setColor(game.getPacman().getColor());
+            g2d.fillOval(x, y, size, size);
+            g2d.setColor(Color.black);
+            g2d.fillOval(x + 22, y + 3, size + 8, size - 8);
+        }
+
+// Restore old transformation (important!)
+        g2d.setTransform(old);
+
     }
 
     private void drawEnemy(Graphics g) {
@@ -244,5 +267,13 @@ public class GameView<BufferedImage> extends JComponent {
         g.drawString("YOU LOSE !", 220, 250);
         g.setFont(new Font("Arial", Font.PLAIN, 20));
         g.drawString("Press -SPACE- to restart the game.", 130, 270);
+    }
+
+    public double getAngle() {
+        return angle;
+    }
+
+    public void setAngle(double angle) {
+        this.angle = angle;
     }
 }

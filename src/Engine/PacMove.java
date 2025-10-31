@@ -23,11 +23,6 @@ class PacMove implements KeyListener {
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
-
-    @Override
     public void keyPressed(KeyEvent e) {
         Type[][] map = game.getMap().getMap();
         int pacXMove = game.getPacman().getX() + game.getPacman().getDirection().getDx();
@@ -45,6 +40,7 @@ class PacMove implements KeyListener {
         if (!game.win() || game.getPacman().isAlive()) {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
+                    view.setAngle(Math.PI);
                     oldDirection = game.getPacman().getDirection();
                     game.getPacman().setDirection(Direction.LEFT);
                     pacYMove = game.getPacman().getY() + game.getPacman().getDirection().getDy();
@@ -76,6 +72,7 @@ class PacMove implements KeyListener {
                     break;
 
                 case KeyEvent.VK_RIGHT:
+                    view.setAngle(0);
                     oldDirection = game.getPacman().getDirection();
                     game.getPacman().setDirection(Direction.RIGHT);
                     pacYMove = game.getPacman().getY() + game.getPacman().getDirection().getDy();
@@ -107,6 +104,7 @@ class PacMove implements KeyListener {
                     break;
 
                 case KeyEvent.VK_UP:
+                    view.setAngle(-Math.PI/2);
                     oldDirection = game.getPacman().getDirection();
                     game.getPacman().setDirection(Direction.UP);
                     pacXMove = game.getPacman().getX() + game.getPacman().getDirection().getDx();
@@ -138,6 +136,7 @@ class PacMove implements KeyListener {
                     break;
 
                 case KeyEvent.VK_DOWN:
+                    view.setAngle(Math.PI/2);
                     oldDirection = game.getPacman().getDirection();
                     game.getPacman().setDirection(Direction.DOWN);
                     pacXMove = game.getPacman().getX() + game.getPacman().getDirection().getDx();
@@ -191,5 +190,10 @@ class PacMove implements KeyListener {
         }
 
         view.repaint();
+    }
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+
     }
 }
